@@ -1,21 +1,16 @@
-const CACHE_NAME = 'wuxing-v1';
-const ASSETS = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/script.js',
-  '/locales/en.json',
-  '/locales/zh.json'
-];
-
+// 强制立即接管旧版本
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
-  );
+  self.skipWaiting();
 });
 
+// 让新版本立即控制所有客户端
+self.addEventListener('activate', event => {
+  event.waitUntil(clients.claim());
+});
+
+// 不缓存任何文件（始终使用最新版本）
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
+    fetch(event.request).catch(() => caches.match(event.request))
   );
 });
