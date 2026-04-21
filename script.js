@@ -166,7 +166,7 @@ function runAnalysis() {
     const hourInput = parseInt(document.getElementById('birth-hour').value);
 
     // 修复第一次点击失败：把 / 转成 -
-    dateInput = dateInput.replace(/\//g, '-');
+    dateInput = dateInput.replace(/[^0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
 
     if (!dateInput) {
         alert(currentLang === 'en' ? "Please select a birth date." : "请选择出生日期。");
