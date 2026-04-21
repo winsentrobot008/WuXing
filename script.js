@@ -15,7 +15,6 @@ async function loadTranslations(lang) {
         translations = await response.json();
         translatePage();
         
-        // Refresh result display if exists
         const saved = localStorage.getItem('savedResult');
         if (saved) displayResult(JSON.parse(saved));
     } catch (error) {
@@ -50,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initEvents();
     updateUserUI();
 
-    // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./service-worker.js')
@@ -129,7 +127,6 @@ function initEvents() {
         updateUserUI();
     });
 
-    // Login Events
     safeAddEvent('user-profile', 'click', () => showModal('login-modal'));
     safeAddEvent('close-login', 'click', () => hideModal('login-modal'));
     
@@ -164,23 +161,12 @@ function updateUserUI() {
     }
 }
 
-function updateLanguage() {
-    const data = i18n[currentLang];
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (data[key]) {
-            if (key === 'legal_notice') {
-                el.innerHTML = data[key];
-            } else {
-                el.textContent = data[key];
-            }
-        }
-    });
-}
-
 function runAnalysis() {
-    const dateInput = document.getElementById('birth-date').value;
+    let dateInput = document.getElementById('birth-date').value;
     const hourInput = parseInt(document.getElementById('birth-hour').value);
+
+    // 修复第一次点击失败：把 / 转成 -
+    dateInput = dateInput.replace(/\//g, '-');
 
     if (!dateInput) {
         alert(currentLang === 'en' ? "Please select a birth date." : "请选择出生日期。");
@@ -192,7 +178,6 @@ function runAnalysis() {
         const lunar = Lunar.fromDate(new Date(y, m - 1, d, hourInput, 0, 0));
         const eightChar = lunar.getEightChar();
 
-        // Calculate Wuxing Strength
         const counts = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
         const mapping = {
             '甲':'wood','乙':'wood','寅':'wood','卯':'wood',
@@ -201,8 +186,13 @@ function runAnalysis() {
             '庚':'metal','辛':'metal','申':'metal','酉':'metal',
             '壬':'water','癸':'water','亥':'water','子':'water'
         };
-        [eightChar.getYearGan(), eightChar.getYearZhi(), eightChar.getMonthGan(), eightChar.getMonthZhi(),
-         eightChar.getDayGan(), eightChar.getDayZhi(), eightChar.getTimeGan(), eightChar.getTimeZhi()].forEach(c => counts[mapping[c]]++);
+
+        [
+            eightChar.getYearGan(), eightChar.getYearZhi(),
+            eightChar.getMonthGan(), eightChar.getMonthZhi(),
+            eightChar.getDayGan(), eightChar.getDayZhi(),
+            eightChar.getTimeGan(), eightChar.getTimeZhi()
+        ].forEach(c => counts[mapping[c]]++);
 
         const result = {
             pillars: [eightChar.getYear(), eightChar.getMonth(), eightChar.getDay(), eightChar.getTime()],
@@ -212,7 +202,6 @@ function runAnalysis() {
 
         localStorage.setItem('savedResult', JSON.stringify(result));
         
-        // Show paywall for new results
         document.getElementById('paywall-overlay').style.display = 'flex';
         
         displayResult(result);
@@ -228,51 +217,43 @@ function runAnalysis() {
 }
 
 function displayResult(result) {
-    if (!translations.scene_wood) return; // Wait for translations
+    if (!translations.scene_wood) return;
 
-    // 1. Energy Bars
     const max = Math.max(...Object.values(result.counts), 1);
     for (const [el, count] of Object.entries(result.counts)) {
         document.getElementById(`bar-${el}`).style.width = `${(count / max) * 100}%`;
     }
 
-    // 2. Scene Conclusion
     const dominant = Object.keys(result.counts).reduce((a, b) => result.counts[a] > result.counts[b] ? a : b);
     const dominantEl = document.getElementById('dominant-element-display');
     dominantEl.className = `dominant-element-art art-${dominant}`;
     document.getElementById('dominant-text').textContent = translations[`el_${dominant}`];
     document.getElementById('scene-conclusion').textContent = translations[`scene_${dominant}`];
-    
-    // 3. Harmony Practice
+
     const tipsList = document.getElementById('balance-tips');
     tipsList.innerHTML = getHarmonyTips(dominant).map(t => `<li>${t}</li>`).join('');
 
-    // 4. Fortune Report Modules (Dynamic Pool)
     const fortune = getFortuneTips(dominant);
     document.getElementById('f-wealth-text').textContent = fortune.wealth;
     document.getElementById('f-love-text').textContent = fortune.love;
     document.getElementById('f-health-text').textContent = fortune.health;
     document.getElementById('f-avoid-text').textContent = fortune.avoid;
 
-    // 5. Compass Rotation
     const compassDegrees = { 'N': 0, 'NE': 45, 'E': 90, 'SE': 135, 'S': 180, 'SW': 225, 'W': 270, 'NW': 315 };
     const targetDir = fortune.direction;
     const rotation = compassDegrees[targetDir] || 0;
     document.getElementById('wealth-pointer').setAttribute('transform', `rotate(${rotation}, 50, 50)`);
 
-    // 6. Colors
     document.getElementById('lucky-color-box').style.backgroundColor = fortune.colors.lucky.code;
     document.getElementById('lucky-color-text').textContent = fortune.colors.lucky.name;
     document.getElementById('avoid-color-box').style.backgroundColor = fortune.colors.avoid.code;
     document.getElementById('avoid-color-text').textContent = fortune.colors.avoid.name;
 
-    // 7. Time
     document.getElementById('f-time-ausp-range').textContent = fortune.times.ausp.range;
     document.getElementById('f-time-ausp-desc').textContent = fortune.times.ausp.desc;
     document.getElementById('f-time-inau-range').textContent = fortune.times.inau.range;
     document.getElementById('f-time-inau-desc').textContent = fortune.times.inau.desc;
 
-    // 8. De-emphasized Pillars Footer
     const footer = document.getElementById('bazi-footer-text');
     footer.textContent = translations.pillars_footer
         .replace('{0}', result.pillars[0])
@@ -280,7 +261,6 @@ function displayResult(result) {
         .replace('{2}', result.pillars[2])
         .replace('{3}', result.pillars[3]);
 
-    // 9. Quote
     displayDailyQuote(dominant);
 }
 
@@ -329,11 +309,11 @@ function getFortuneTips(el) {
 function getHarmonyTips(el) {
     const isZh = currentLang === 'zh';
     const pools = {
-        wood: [isZh ? "🌱 减少咖啡因，多喝绿茶疏理肝气" : "🌱 Reduce caffeine, try green tea.", isZh ? "🌱 工作间隙远眺绿色" : "🌱 Look at greenery during breaks."],
-        fire: [isZh ? "🔥 下午三点后静坐，平复心火" : "🔥 Meditate after 3 PM.", isZh ? "🔥 饮食清淡，避开辛辣" : "🔥 Keep meals light and mild."],
-        earth: [isZh ? "⛰️ 饭后百步走，促进运化" : "⛰️ Walk 100 steps after meals.", isZh ? "⛰️ 减少思虑，专注当下" : "⛰️ Focus on the present moment."],
-        metal: [isZh ? "⚔️ 减少辛辣刺激，保护肺金" : "⚔️ Reduce spicy food; protect your lungs.", isZh ? "⚔️ 精简待办清单" : "⚔️ Simplify your to-do list."],
-        water: [isZh ? "💧 晚间热水泡脚，温养肾气" : "💧 Warm foot bath at night to nourish kidney Qi.", isZh ? "💧 睡前听流水声助眠" : "💧 Listen to water sounds for sleep."]
+        wood: ["🌱 减少咖啡因，多喝绿茶疏理肝气", "🌱 工作间隙远眺绿色"],
+        fire: ["🔥 下午三点后静坐，平复心火", "🔥 饮食清淡，避开辛辣"],
+        earth: ["⛰️ 饭后百步走，促进运化", "⛰️ 减少思虑，专注当下"],
+        metal: ["⚔️ 减少辛辣刺激，保护肺金", "⚔️ 精简待办清单"],
+        water: ["💧 晚间热水泡脚，温养肾气", "💧 睡前听流水声助眠"]
     };
     return pools[el];
 }
@@ -341,11 +321,11 @@ function getHarmonyTips(el) {
 function displayDailyQuote(el) {
     const isZh = currentLang === 'zh';
     const quotes = {
-        wood: { q: isZh ? "“像森林一样生长。”" : "“Grow like a forest.”", s: isZh ? "《黄帝内经》：肝者，将军之官。" : "Neijing: The liver is the general." },
-        fire: { q: isZh ? "“照亮未知的路。”" : "“Light the unknown path.”", s: isZh ? "《黄帝内经》：心者，君主之官。" : "Neijing: The heart is the monarch." },
-        earth: { q: isZh ? "“厚德方能载物。”" : "“Great virtue bears much.”", s: isZh ? "《黄帝内经》：脾者，仓廪之官。" : "Neijing: The spleen is the granary official." },
-        metal: { q: isZh ? "“在寂静中升华。”" : "“Sublime in silence.”", s: isZh ? "《黄帝内经》：肺者，相傅之官。" : "Neijing: The lungs are the mentor." },
-        water: { q: isZh ? "“上善若水。”" : "“Highest good is like water.”", s: isZh ? "《黄帝内经》：肾者，作强之官。" : "Neijing: The kidney is the power." }
+        wood: { q: "“像森林一样生长。”", s: "《黄帝内经》：肝者，将军之官。" },
+        fire: { q: "“照亮未知的路。”", s: "《黄帝内经》：心者，君主之官。" },
+        earth: { q: "“厚德方能载物。”", s: "《黄帝内经》：脾者，仓廪之官。" },
+        metal: { q: "“在寂静中升华。”", s: "《黄帝内经》：肺者，相傅之官。" },
+        water: { q: "“上善若水。”", s: "《黄帝内经》：肾者，作强之官。" }
     };
     document.getElementById('daily-quote').textContent = quotes[el].q;
     document.getElementById('daily-science').textContent = quotes[el].s;
@@ -375,16 +355,4 @@ function showAd(mode) {
                 alert(translations.alert_reset);
                 location.reload();
             } else {
-                alert(translations.alert_tomorrow);
-            }
-        }
-    }, 1000);
-}
-
-function switchView(viewId) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById(viewId).classList.add('active');
-}
-
-function showModal(id) { document.getElementById(id).classList.add('active'); }
-function hideModal(id) { document.getElementById(id).classList.remove('active'); }
+                alert(translations.alert_tomorrow
