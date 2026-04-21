@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WuXing Oracle | 五行神谕</title>
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <h1 class="logo">WuXing Oracle</h1>
+            <button id="lang-btn" class="lang-toggle">中/EN</button>
+        </header>
+
+        <!-- MAIN VIEW (Home/Input) -->
+        <main id="home-view" class="view active">
+            <div class="hero-section">
+                <h2 data-i18n="hero_title" class="hero-title">Discover Your Cosmic Blueprint</h2>
+                <p data-i18n="hero_subtitle" class="hero-subtitle">Enter your birth details for a deep healing insight.</p>
+            </div>
+
+            <div class="input-form">
+                <div class="form-group">
+                    <label data-i18n="label_birthdate">Birth Date</label>
+                    <input type="date" id="birth-date" value="1995-01-01">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="label_birthhour">Birth Hour (Shengchen)</label>
+                    <select id="birth-hour">
+                        <option value="0" data-i18n="hour_zi">Zi (23:00 - 01:00)</option>
+                        <option value="1" data-i18n="hour_chou">Chou (01:00 - 03:00)</option>
+                        <option value="3" data-i18n="hour_yin">Yin (03:00 - 05:00)</option>
+                        <option value="5" data-i18n="hour_mao">Mao (05:00 - 07:00)</option>
+                        <option value="7" data-i18n="hour_chen">Chen (07:00 - 09:00)</option>
+                        <option value="9" data-i18n="hour_si">Si (09:00 - 11:00)</option>
+                        <option value="11" data-i18n="hour_wu">Wu (11:00 - 13:00)</option>
+                        <option value="13" data-i18n="hour_wei">Wei (13:00 - 15:00)</option>
+                        <option value="15" data-i18n="hour_shen">Shen (15:00 - 17:00)</option>
+                        <option value="17" data-i18n="hour_you">You (17:00 - 19:00)</option>
+                        <option value="19" data-i18n="hour_xu">Xu (19:00 - 21:00)</option>
+                        <option value="21" data-i18n="hour_hai">Hai (21:00 - 23:00)</option>
+                    </select>
+                </div>
+                <button id="analyze-btn" class="main-btn" data-i18n="btn_start">Start Analysis</button>
+            </div>
+        </main>
+
+        <!-- RESULT VIEW -->
+        <main id="result-view" class="view">
+            <div class="result-header">
+                <h2 data-i18n="result_title">Your Healing Insight</h2>
+            </div>
+
+            <!-- 1. Energy Bars -->
+            <div class="energy-container">
+                <div class="energy-bar-item">
+                    <span class="el-label" data-i18n="el_wood">Wood</span>
+                    <div class="bar-bg"><div id="bar-wood" class="bar-fill wood"></div></div>
+                </div>
+                <div class="energy-bar-item">
+                    <span class="el-label" data-i18n="el_fire">Fire</span>
+                    <div class="bar-bg"><div id="bar-fire" class="bar-fill fire"></div></div>
+                </div>
+                <div class="energy-bar-item">
+                    <span class="el-label" data-i18n="el_earth">Earth</span>
+                    <div class="bar-bg"><div id="bar-earth" class="bar-fill earth"></div></div>
+                </div>
+                <div class="energy-bar-item">
+                    <span class="el-label" data-i18n="el_metal">Metal</span>
+                    <div class="bar-bg"><div id="bar-metal" class="bar-fill metal"></div></div>
+                </div>
+                <div class="energy-bar-item">
+                    <span class="el-label" data-i18n="el_water">Water</span>
+                    <div class="bar-bg"><div id="bar-water" class="bar-fill water"></div></div>
+                </div>
+            </div>
+
+            <!-- 2. Scene Conclusion -->
+            <div class="ai-insight">
+                <h3 id="scene-conclusion" class="scene-title"></h3>
+                <p id="insight-text"></p>
+            </div>
+
+            <!-- 3. Harmony Practice -->
+            <div class="info-card">
+                <h4 data-i18n="title_tips">Harmony Practice</h4>
+                <ul id="balance-tips" class="tips-list"></ul>
+            </div>
+
+            <!-- 4. Today's Detailed Fortune Report (New 6 Modules) -->
+            <div class="fortune-report">
+                <h3 class="report-title" data-i18n="report_title">Today's Detailed Fortune Report</h3>
+                
+                <div class="fortune-module wealth">
+                    <div class="module-header">
+                        <span class="icon">💰</span>
+                        <h5 data-i18n="m_wealth">Wealth Guide</h5>
+                    </div>
+                    <p id="f-wealth-text" class="module-desc"></p>
+                </div>
+
+                <div class="fortune-module love">
+                    <div class="module-header">
+                        <span class="icon">💘</span>
+                        <h5 data-i18n="m_love">Love Guide</h5>
+                    </div>
+                    <p id="f-love-text" class="module-desc"></p>
+                </div>
+
+                <div class="fortune-module health">
+                    <div class="module-header">
+                        <span class="icon">💪</span>
+                        <h5 data-i18n="m_health">Health Guide</h5>
+                    </div>
+                    <p id="f-health-text" class="module-desc"></p>
+                </div>
+
+                <div class="fortune-module avoid">
+                    <div class="module-header">
+                        <span class="icon">⚠️</span>
+                        <h5 data-i18n="m_avoid">Avoidance Warning</h5>
+                    </div>
+                    <p id="f-avoid-text" class="module-desc"></p>
+                </div>
+
+                <div class="fortune-module color">
+                    <div class="module-header">
+                        <span class="icon">🎨</span>
+                        <h5 data-i18n="m_color">Color Energy</h5>
+                    </div>
+                    <div id="f-color-card" class="color-card">
+                        <div class="color-lucky">
+                            <span data-i18n="c_lucky">Lucky</span>
+                            <div id="lucky-color-box" class="color-box"></div>
+                            <p id="lucky-color-text"></p>
+                        </div>
+                        <div class="color-avoid">
+                            <span data-i18n="c_avoid">Avoid</span>
+                            <div id="avoid-color-box" class="color-box"></div>
+                            <p id="avoid-color-text"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fortune-module time">
+                    <div class="module-header">
+                        <span class="icon">📅</span>
+                        <h5 data-i18n="m_time">Time Fortune</h5>
+                    </div>
+                    <div class="time-timeline">
+                        <div class="time-item auspicious">
+                            <span id="f-time-ausp-range">13:00-15:00</span>
+                            <p id="f-time-ausp-desc"></p>
+                        </div>
+                        <div class="time-item inauspicious">
+                            <span id="f-time-inau-range">19:00-21:00</span>
+                            <p id="f-time-inau-desc"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Actions -->
+            <div class="result-actions">
+                <button id="ad-next-day-btn" class="ad-next-btn" data-i18n="btn_ad_next">Watch Ad for Tomorrow's Access</button>
+                <button onclick="location.reload()" class="back-link" data-i18n="btn_back">Back to Home</button>
+            </div>
+
+            <!-- 6. De-emphasized Ganzhi Pillars (Bottom) -->
+            <div class="bazi-info-footer">
+                <p id="bazi-footer-text"></p>
+            </div>
+
+            <!-- 7. Daily Quote -->
+            <footer class="quote-pocket">
+                <p id="daily-quote" class="quote-main"></p>
+                <p id="daily-science" class="quote-sub"></p>
+            </footer>
+        </main>
+
+        <!-- AD/VIP MODAL -->
+        <div id="ad-modal" class="modal">
+            <div class="modal-content">
+                <h3 data-i18n="modal_title">Daily Limit Reached</h3>
+                <p data-i18n="modal_desc">Watch a short ad to unlock one more analysis, or get VIP for unlimited access.</p>
+                <button id="watch-ad-btn" class="ad-btn" data-i18n="btn_ad">Watch Ad to Unlock</button>
+                <button id="vip-btn-modal" class="vip-btn" data-i18n="btn_vip">Upgrade to VIP</button>
+                <button id="close-modal" class="close-btn" data-i18n="btn_close">Close</button>
+            </div>
+        </div>
+
+        <!-- AD TIMER OVERLAY -->
+        <div id="ad-overlay" class="ad-overlay">
+            <div class="timer-box">
+                <p data-i18n="ad_loading">Watching Ad...</p>
+                <span id="timer-num">5</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunar-javascript/1.6.12/lunar.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
