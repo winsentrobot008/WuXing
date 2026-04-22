@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WuXing Oracle | 五行神谕</title>
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f0f1a">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <header class="top-nav">
+            <div class="logo">WuXing Oracle</div>
+            <div class="nav-actions">
+                <button id="lang-btn" class="lang-toggle">中/EN</button>
+                <div id="user-profile" class="user-profile">
+                    <span id="user-icon" class="user-icon">👤</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN VIEW (Home/Input) -->
+        <main id="home-view" class="view active">
+            <div class="hero-section">
+                <h1 data-i18n="hero_title">WuXing Oracle</h1>
+                <p class="subtitle" data-i18n="hero_subtitle">Eastern Mysticism & Spiritual Wellness</p>
+            </div>
+
+            <div class="input-form">
+                <div class="form-group">
+                    <label data-i18n="label_birthdate">Birth Date</label>
+                    <input type="date" id="birth-date" value="1995-01-01">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="label_birthhour">Birth Hour (Shengchen)</label>
+                    <select id="birth-hour">
+                        <option value="0" data-i18n="hour_zi">Zi (23:00 - 01:00)</option>
+                        <option value="1" data-i18n="hour_chou">Chou (01:00 - 03:00)</option>
+                        <option value="3" data-i18n="hour_yin">Yin (03:00 - 05:00)</option>
+                        <option value="5" data-i18n="hour_mao">Mao (05:00 - 07:00)</option>
+                        <option value="7" data-i18n="hour_chen">Chen (07:00 - 09:00)</option>
+                        <option value="9" data-i18n="hour_si">Si (09:00 - 11:00)</option>
+                        <option value="11" data-i18n="hour_wu">Wu (11:00 - 13:00)</option>
+                        <option value="13" data-i18n="hour_wei">Wei (13:00 - 15:00)</option>
+                        <option value="15" data-i18n="hour_shen">Shen (15:00 - 17:00)</option>
+                        <option value="17" data-i18n="hour_you">You (17:00 - 19:00)</option>
+                        <option value="19" data-i18n="hour_xu">Xu (19:00 - 21:00)</option>
+                        <option value="21" data-i18n="hour_hai">Hai (21:00 - 23:00)</option>
+                    </select>
+                </div>
+                <button id="analyze-btn" class="main-btn" data-i18n="btn_start">Start Analysis</button>
+            </div>
+        </main>
+
+        <!-- RESULT VIEW -->
+        <main id="result-view" class="view">
+            <div class="result-header">
+                <h2 data-i18n="result_title">Your Energetic Essence</h2>
+                <div id="dominant-element-display" class="dominant-element-art">
+                    <span id="dominant-text">WOOD</span>
+                </div>
+                <p id="scene-conclusion" class="scene-conclusion"></p>
+            </div>
+
+            <!-- 1. Energy Bars -->
+            <div class="energy-container">
+                <div class="energy-bar-item">
+                    <span class="el-label" data-i18n="el_wood">Wood</span>
+                    <div class="bar-bg"><div id="bar-wood" class="bar-fill wood"></div></div>
+                </div>
+                <div class="energy-bar-item">
+                    <span class="el-label" data-i18n="el_fire">Fire</span>
+                    <div class="bar-bg"><div id="bar-fire" class="bar-fill fire"></div></div>
+                </div>
+                <div class="energy-bar-item">
+                    <span class="el-label" data-i18n="el_earth">Earth</span>
+                    <div class="bar-bg"><div id="bar-earth" class="bar-fill earth"></div></div>
+                </div>
+                <div class="energy-bar-item">
+                    <span class="el-label" data-i18n="el_metal">Metal</span>
+                    <div class="bar-bg"><div id="bar-metal" class="bar-fill metal"></div></div>
+                </div>
+                <div class="energy-bar-item">
+                    <span class="el-label" data-i18n="el_water">Water</span>
+                    <div class="bar-bg"><div id="bar-water" class="bar-fill water"></div></div>
+                </div>
+            </div>
+
+            <!-- 2. Scene Conclusion -->
+            <div class="ai-insight">
+                <p id="insight-text"></p>
+            </div>
+
+            <!-- 3. Harmony Practice -->
+            <div class="info-card">
+                <h4 data-i18n="title_tips">Harmony Practice</h4>
+                <ul id="balance-tips" class="tips-list"></ul>
+            </div>
+
+            <!-- 4. Today's Detailed Fortune Report (New 6 Modules) -->
+            <div class="paywall-container">
+                <!-- Blur Overlay -->
+                <div id="paywall-overlay" class="paywall-overlay">
+                    <h4 data-i18n="paywall_title">Reveal Your Full Destiny</h4>
+                    <p data-i18n="paywall_desc">Unlock detailed compass directions, daily rituals, and color therapy.</p>
+                    <button id="unlock-btn" class="unlock-btn" data-i18n="btn_unlock">Unlock Full Report</button>
+                </div>
+
+                <div class="fortune-report">
+                    <h3 class="report-title" data-i18n="report_subtitle">Daily Energetic Insight</h3>
+                    
+                    <!-- Wealth Compass Card -->
+                    <div class="fortune-module wealth info-card">
+                        <div class="module-header">
+                            <span class="icon">💰</span>
+                            <h5 data-i18n="module_wealth">Wealth Compass</h5>
+                        </div>
+                        <div id="wealth-compass-container" class="compass-container">
+                            <svg class="compass-svg" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>
+                                <text x="50" y="12" text-anchor="middle" font-size="6" fill="currentColor">N</text>
+                                <text x="50" y="92" text-anchor="middle" font-size="6" fill="currentColor">S</text>
+                                <text x="12" y="52" text-anchor="middle" font-size="6" fill="currentColor">W</text>
+                                <text x="88" y="52" text-anchor="middle" font-size="6" fill="currentColor">E</text>
+                                <line x1="50" y1="50" x2="50" y2="20" id="wealth-pointer" stroke="var(--accent-gold)" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                <defs>
+                                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                        <polygon points="0 0, 10 3.5, 0 7" fill="var(--accent-gold)" />
+                                    </marker>
+                                </defs>
+                            </svg>
+                        </div>
+                        <p id="wealth-desc" class="module-desc"></p>
+                    </div>
+
+                    <!-- Actionable Advice Card (Lucky Color & Style) -->
+                    <div class="fortune-module info-card">
+                        <div class="module-header">
+                            <span class="icon">🎨</span>
+                            <h5 data-i18n="module_style">Color & Style</h5>
+                        </div>
+                        <div class="color-card">
+                            <div class="color-lucky">
+                                <span data-i18n="lucky_label">Lucky</span>
+                                <div id="lucky-color-box" class="color-box"></div>
+                                <p id="lucky-color-text"></p>
+                            </div>
+                            <div class="color-avoid">
+                                <span data-i18n="avoid_label">Avoid</span>
+                                <div id="avoid-color-box" class="color-box"></div>
+                                <p id="avoid-color-text"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Harmony Tips -->
+                    <div class="fortune-module info-card">
+                        <div class="module-header">
+                            <span class="icon">🧘</span>
+                            <h5 data-i18n="module_harmony">Zen Practice</h5>
+                        </div>
+                        <p id="harmony-desc" class="module-desc"></p>
+                    </div>
+
+                    <!-- Best Time -->
+                    <div class="fortune-module time info-card">
+                        <div class="module-header">
+                            <span class="icon">⏰</span>
+                            <h5 data-i18n="module_time">Peak Energy Hour</h5>
+                        </div>
+                        <p id="time-desc" class="module-desc"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Actions -->
+            <div class="result-actions">
+                <button id="coffee-btn" class="coffee-btn">
+                    <span>☕</span>
+                    <span data-i18n="btn_coffee">Buy me a coffee</span>
+                </button>
+                <div class="main-actions">
+                    <button id="restart-btn" class="secondary-btn" data-i18n="btn_restart">Restart</button>
+                    <button id="back-home-btn" class="main-btn" data-i18n="btn_back">Back Home</button>
+                </div>
+            </div>
+
+            <!-- 6. De-emphasized Ganzhi Pillars (Bottom) -->
+            <div class="bazi-info-footer">
+                <p id="bazi-footer-text"></p>
+            </div>
+
+            <!-- 7. Daily Quote -->
+            <footer class="quote-pocket">
+                <p id="daily-quote" class="quote-main"></p>
+                <p id="daily-science" class="quote-sub"></p>
+            </footer>
+        </main>
+
+        <!-- AD/VIP MODAL -->
+        <div id="ad-modal" class="modal">
+            <div class="modal-content">
+                <h3 data-i18n="modal_title">Daily Limit Reached</h3>
+                <p data-i18n="modal_desc">The stars need time to realign. Unlock now or wait for the next dawn.</p>
+                <button id="watch-ad-btn" class="main-btn" data-i18n="btn_ad">Watch Video to Unlock</button>
+                <button id="premium-btn" class="vip-btn" data-i18n="btn_premium">Upgrade to Premium - $9.99/mo</button>
+                <button id="close-modal" class="close-btn" data-i18n="btn_close">Return</button>
+            </div>
+        </div>
+
+        <!-- AD TIMER OVERLAY -->
+        <div id="ad-overlay" class="ad-overlay">
+            <div class="timer-box">
+                <p data-i18n="ad_loading">Watching Ad...</p>
+                <span id="timer-num">5</span>
+            </div>
+        </div>
+
+        <!-- LOGIN MODAL (Mock) -->
+        <div id="login-modal" class="modal">
+            <div class="modal-content login-box">
+                <h3 data-i18n="login_title">Welcome</h3>
+                <p data-i18n="login_desc">Login to sync your data across devices.</p>
+                <div class="login-options">
+                    <button id="guest-login-btn" class="main-btn" data-i18n="btn_guest">Guest Experience</button>
+                    <div class="divider"><span>OR</span></div>
+                    <input type="email" id="login-email" placeholder="Email Address">
+                    <button id="email-login-btn" class="main-btn" data-i18n="btn_login">Login with Email</button>
+                </div>
+                <button id="close-login" class="close-btn" data-i18n="btn_close">Close</button>
+            </div>
+        </div>
+
+        <!-- PRIVACY FOOTER -->
+        <footer class="legal-footer">
+            <p class="disclaimer">For entertainment and spiritual wellness purposes only. Not intended as professional advice.</p>
+            <p>© 2026 WuXing Oracle. <a href="privacy_policy.html" data-i18n="link_privacy">Privacy Policy</a></p>
+        </footer>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunar-javascript/1.6.12/lunar.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
