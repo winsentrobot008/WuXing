@@ -32,7 +32,7 @@ async function loadTranslations(lang) {
         translationsReady = false;
         console.error('Failed to load translations:', error);
         if (location.protocol === 'file:') {
-            alert("你正在用 file:// 方式打开页面，浏览器会阻止 fetch 本地 JSON（语言包）。请用本地静态服务器启动（例如：npx serve 或 python http.server），否则语言切换与结果渲染会异常。");
+            console.warn("file:// blocks locale fetch. Use local static server (npx serve / python http.server).");
         }
     }
 }
@@ -136,7 +136,7 @@ function initEvents() {
     });
 
     safeAddEvent('coffee-btn', 'click', () => {
-        alert(t('alert_coffee', currentLang === 'zh' ? '感谢您的灵性咖啡！ ☕' : 'Thank you for the spiritual coffee! ☕'));
+        console.info(t('alert_coffee', currentLang === 'zh' ? '感谢您的灵性咖啡！ ☕' : 'Thank you for the spiritual coffee! ☕'));
     });
 
     safeAddEvent('premium-btn', 'click', () => {
@@ -161,13 +161,13 @@ function initEvents() {
         const emailEl = document.getElementById('login-email');
         const email = emailEl ? emailEl.value : '';
         if (email) {
-            alert(t('alert_login_success', currentLang === 'zh' ? '登录成功！' : 'Login successful!'));
+            console.info(t('alert_login_success', currentLang === 'zh' ? '登录成功！' : 'Login successful!'));
             hideModal('login-modal');
             localStorage.setItem('user_logged_in', 'true');
             localStorage.setItem('user_email', email);
             updateUserUI();
         } else {
-            alert(t('alert_enter_email', currentLang === 'zh' ? '请输入邮箱。' : 'Please enter an email.'));
+            return;
         }
     });
 }
@@ -200,7 +200,6 @@ function runAnalysis() {
     const hourInput = parseInt(document.getElementById('birth-hour').value);
 
     if (!dateInput) {
-        alert(t('alert_select_date', currentLang === 'zh' ? '请选择出生日期。' : 'Please select a birth date.'));
         return;
     }
 
@@ -241,7 +240,6 @@ function runAnalysis() {
 
     } catch (e) {
         console.error(e);
-        alert("Error. Please check the date.");
     }
 }
 
@@ -396,15 +394,14 @@ function showAd(mode) {
             if (mode === 'paywall') {
                 const paywall = document.getElementById('paywall-overlay');
                 if (paywall) paywall.style.display = 'none';
-                alert(t('alert_unlocked', currentLang === 'zh' ? '完整报告已解锁！ ✨' : 'Full Report Unlocked! ✨'));
+                console.info(t('alert_unlocked', currentLang === 'zh' ? '完整报告已解锁！ ✨' : 'Full Report Unlocked! ✨'));
             } else if (mode === 'reset') {
                 freeCount = 0;
                 localStorage.setItem('freeCount', 0);
                 localStorage.removeItem('savedResult');
-                alert(t('alert_reset', currentLang === 'zh' ? '访问已重置！您可以再次测算。' : 'Access Reset! You can measure again.'));
                 location.reload();
             } else {
-                alert(t('alert_tomorrow', currentLang === 'zh' ? '明日测算资格已解锁！明天见。' : "Tomorrow's access unlocked! See you then."));
+                console.info(t('alert_tomorrow', currentLang === 'zh' ? '明日测算资格已解锁！明天见。' : "Tomorrow's access unlocked! See you then."));
             }
         }
     }, 1000);
