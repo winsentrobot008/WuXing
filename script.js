@@ -144,7 +144,6 @@ function initEvents() {
         const overlay = document.getElementById('paywall-overlay');
         if (overlay) overlay.style.display = 'none';
         localStorage.setItem('is_vip', 'true');
-        alert(currentLang === 'en' ? "Premium Activated! Thank you for your support. 💎" : "高级版已激活！感谢您的支持。💎");
         updateUserUI();
     });
 
@@ -153,7 +152,6 @@ function initEvents() {
     safeAddEvent('close-login', 'click', () => hideModal('login-modal'));
     
     safeAddEvent('guest-login-btn', 'click', () => {
-        alert(t('alert_welcome_guest', currentLang === 'zh' ? '欢迎，访客！' : 'Welcome, Guest!'));
         hideModal('login-modal');
         localStorage.setItem('user_logged_in', 'true');
         updateUserUI();
