@@ -42,5 +42,14 @@ If Lunar-JS releases a new version, update the CDN link version number in the `<
 - **Monetization**: Replace the mock paywall logic in `script.js` with real Google AdSense or Stripe integration.
 - **Data Persistence**: Follow `docs/database_schema.md` to implement a real backend API, replacing the current `localStorage` mock.
 
----
-*This project is standardized for commercial deployment (v1.1.0).*
+7步可执行方法】
+1. 找趋势：在App Store分类找爆发词，用Sensor Tower验证竞品数据
+2. 定人群：聚焦特定活跃圈层（如女性护肤）
+3. 做单机：专注单人使用场景，避免社交功能
+4. 高分享：设计病毒传播点（如AI特效），让用户自发分享到TikTok
+5. 减技术：复用现有API，用Cursor快速开发
+6. 强分发：建立TikTok矩阵，在APP内设置引流入口
+7. 卖时机：月收入达1-2万美金时，在Flippa平台套现
+
+关键点：不创造新需求，只用AI翻新"老古董"APP；1个月内上线，不必完美。警惕两大陷阱：做市场不存在的产品；仅有代码缺乏流量矩阵。
+AI算命爆火背后，是一场精准收割年轻人焦虑的赛博生意。59元解锁“命运真相”，实则是模板拼接的心理安慰剂。从八字到塔罗，披着科技外衣的玄学，靠巴纳姆效应与沉没成本陷阱，让百万用户心甘情愿买单。但别忘了：真正的命运，从不在算法里。
